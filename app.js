@@ -1,4 +1,4 @@
-(function (window, document, moment) {
+(function (window, document, moment, _) {
     'use strict';
     var socket,
         userForm,
@@ -142,7 +142,7 @@
 
     //------------------------------------------------------------
 
-    window.addEventListener('load', function (e) {
+    window.addEventListener('load', function () {
         var username;
 
         username = window.localStorage.getItem('username');
@@ -155,4 +155,4 @@
 
     //------------------------------------------------------------
 
-})(window, document, moment);
+})(window, document, moment, _);
