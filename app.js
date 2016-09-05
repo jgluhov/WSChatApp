@@ -1,4 +1,4 @@
-(function () {
+(function (window) {
     'use strict';
     var socket,
         userForm,
@@ -11,15 +11,9 @@
         console.log(e);
     };
 
+    //------------------------------------------------------------
+
     chatForm = document.forms.chatForm;
-    userForm = document.forms.userForm;
-
-    usernameFormGroup = userForm.querySelector('.form-group');
-
-    userForm.username.addEventListener('change', function () {
-        _.isEmpty(userForm.username.value) ?
-            usernameErrorHandler() : usernameDefaultHandler();
-    });
 
     chatForm.submit.addEventListener('click', function (e) {
         var message,
@@ -39,6 +33,17 @@
         socket.send(message);
     });
 
+    //------------------------------------------------------------
+
+    userForm = document.forms.userForm;
+
+    usernameFormGroup = userForm.querySelector('.form-group');
+
+    userForm.username.addEventListener('change', function () {
+        _.isEmpty(userForm.username.value) ?
+            usernameErrorHandler() : usernameDefaultHandler();
+    });
+
     userForm.submit.addEventListener('click', function (e) {
         var username;
 
@@ -55,6 +60,13 @@
         userForm.username.setAttribute('disabled', 'disabled');
     });
 
+    userForm.addEventListener('dblclick', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        userForm.username.removeAttribute('disabled');
+    });
+
     function usernameErrorHandler() {
         userForm.username.placeholder = 'Enter your name!';
         usernameFormGroup.classList.add('has-error');
@@ -65,4 +77,10 @@
         usernameFormGroup.classList.remove('has-error');
     }
 
-})();
+    //------------------------------------------------------------
+
+    window.addEventListener('load', function (e) {
+
+    });
+
+})(window);
