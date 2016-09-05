@@ -1,4 +1,5 @@
 const ws = require('ws');
+const replay = require('./replay');
 
 const wsServer = new ws.Server({
     port: 8081
@@ -12,42 +13,18 @@ wsServer.on('connection', (socket) => {
     userId = Math.random();
     users[userId] = socket;
 
-    console.log(`a user ${userId} connected`);
-
-    function usersCountHandler() {
-        let ids;
-
-        ids = Object.getOwnPropertyNames(users);
-
-        for(let i = 0; i < ids.length; i++) {
-            users[ids[i]].send(JSON.stringify({type: 'users count', count: ids.length}));
-        }
-    }
-
-    function replayMessageHandler(message) {
-        let ids;
-
-        ids = Object.getOwnPropertyNames(users);
-
-        message.type = 'chat message';
-
-        for(let i = 0; i < ids.length; i++) {
-            users[ids[i]].send(JSON.stringify(message));
-        }
-    }
-
     socket.on('message', (data) => {
         let message = JSON.parse(data);
 
         switch (message.type) {
-            case 'users count': usersCountHandler(message); break;
-            case 'chat message': replayMessageHandler(message); break;
+            case 'users count': replay.usersCountHandler(); break;
+            case 'chat message': replay.chatMessageHandler(message); break;
         }
     });
 
     socket.on('close', () => {
-        console.log(`a user ${userId} disconnected`);
         delete users[userId];
+        usersCountHandler();
     })
 });
 
