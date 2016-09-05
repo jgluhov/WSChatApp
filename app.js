@@ -1,4 +1,4 @@
-(function (window, document) {
+(function (window, document, moment) {
     'use strict';
     var socket,
         userForm,
@@ -14,6 +14,7 @@
         var message;
 
         message  = JSON.parse(e.data);
+        chatContent.appendMessage(message);
     };
 
     //------------------------------------------------------------
@@ -36,6 +37,8 @@
         }
 
         socket.send(JSON.stringify({username: username, message: message}));
+
+        chatForm.message.value = null;
     });
 
     //------------------------------------------------------------
@@ -44,8 +47,45 @@
         chatContentElement = document.querySelector(element);
 
         this.appendMessage = function (message) {
+            var messageElement,
+                datetime,
+                childNodes;
 
+            messageElement = createMessageElement();
+
+            childNodes = messageElement.childNodes;
+
+            datetime = new Date();
+            childNodes[0].setAttribute('datetime', datetime.toUTCString());
+            childNodes[0].textContent = moment(datetime).format('MMMM Do YYYY, h:mm:ss a');
+
+            childNodes[1].textContent = message.username + ':';
+            childNodes[2].textContent = message.message;
+
+            chatContentElement.appendChild(messageElement);
         };
+
+        function createMessageElement() {
+            var messageElement,
+                dateElement,
+                titleElement,
+                bodyElement;
+
+            messageElement = document.createElement('div');
+            dateElement = document.createElement('time');
+
+            titleElement = document.createElement('span');
+            titleElement.classList.add('message-title');
+            bodyElement = document.createElement('span');
+            bodyElement.classList.add('message-body');
+
+            messageElement.appendChild(dateElement);
+            messageElement.appendChild(titleElement);
+            messageElement.appendChild(bodyElement);
+            messageElement.classList.add('message');
+
+            return messageElement;
+        }
 
     }
 
@@ -115,4 +155,4 @@
 
     //------------------------------------------------------------
 
-})(window, document);
+})(window, document, moment);

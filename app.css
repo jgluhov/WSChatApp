@@ -1,3 +1,12 @@
+.message > time {
+    display: inline-block;
+    margin-right: 5px;
+}
+.message > .message-title {
+    font-weight: 600;
+    margin-right: 5px;
+}
+
 .form-group > input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 1000px white inset;
 }
