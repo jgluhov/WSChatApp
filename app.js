@@ -4,17 +4,28 @@
         userForm,
         usernameFormGroup,
         chatContent,
+        usersCountElement,
         chatContentElement,
         chatForm;
 
     socket = new WebSocket('ws://localhost:8081');
     chatContent = new ChatContent('.chat-content');
+    usersCountElement = document.querySelector('.users-count');
 
+    socket.onopen = function () {
+        socket.send(JSON.stringify({type: 'users count'}));
+    };
+    
     socket.onmessage = function (e) {
         var message;
 
         message  = JSON.parse(e.data);
-        chatContent.appendMessage(message);
+
+        switch (message.type) {
+            case 'chat message': chatContent.appendMessage(message); break;
+            case 'users count': updateUsersCount(message); break;
+        }
+
     };
 
     //------------------------------------------------------------
@@ -22,21 +33,25 @@
     chatForm = document.forms.chatForm;
 
     chatForm.submit.addEventListener('click', function (e) {
-        var message,
-            username;
-
         e.preventDefault();
         e.stopPropagation();
 
-        message = chatForm.message.value;
-        username = userForm.username.value;
-
-        if(_.isEmpty(username)) {
+        if(_.isEmpty(userForm.username.value)) {
             usernameErrorHandler();
             return;
         }
 
-        socket.send(JSON.stringify({username: username, message: message}));
+        if(_.isEmpty(chatForm.message.value)) {
+            return;
+        }
+
+        socket.send(JSON.stringify({
+            type: 'chat message',
+            message: {
+                username: userForm.username.value,
+                body: chatForm.message.value
+            }
+        }));
 
         chatForm.message.value = null;
     });
@@ -46,7 +61,7 @@
     function ChatContent(element) {
         chatContentElement = document.querySelector(element);
 
-        this.appendMessage = function (message) {
+        this.appendMessage = function (data) {
             var messageElement,
                 datetime,
                 childNodes;
@@ -59,8 +74,8 @@
             childNodes[0].setAttribute('datetime', datetime.toUTCString());
             childNodes[0].textContent = moment(datetime).format('MMMM Do YYYY, h:mm:ss a');
 
-            childNodes[1].textContent = message.username + ':';
-            childNodes[2].textContent = message.message;
+            childNodes[1].textContent = data.message.username + ':';
+            childNodes[2].textContent = data.message.body;
 
             chatContentElement.appendChild(messageElement);
         };
@@ -154,5 +169,9 @@
     });
 
     //------------------------------------------------------------
+
+    function updateUsersCount(message) {
+        usersCountElement.textContent = message.count;
+    }
 
 })(window, document, moment, _);
