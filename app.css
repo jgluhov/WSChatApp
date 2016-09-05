@@ -1,5 +1,9 @@
-input:-webkit-autofill {
+.form-group > input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 1000px white inset;
+}
+
+.form-group > input[disabled="disabled"]:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #eee inset;
 }
 
 .form-group > input::-webkit-input-placeholder {

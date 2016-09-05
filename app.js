@@ -1,14 +1,19 @@
-(function (window) {
+(function (window, document) {
     'use strict';
     var socket,
         userForm,
         usernameFormGroup,
+        chatContent,
+        chatContentElement,
         chatForm;
 
     socket = new WebSocket('ws://localhost:8081');
+    chatContent = new ChatContent('.chat-content');
 
     socket.onmessage = function (e) {
-        console.log(e);
+        var message;
+
+        message  = JSON.parse(e.data);
     };
 
     //------------------------------------------------------------
@@ -30,8 +35,19 @@
             return;
         }
 
-        socket.send(message);
+        socket.send(JSON.stringify({username: username, message: message}));
     });
+
+    //------------------------------------------------------------
+    
+    function ChatContent(element) {
+        chatContentElement = document.querySelector(element);
+
+        this.appendMessage = function (message) {
+
+        };
+
+    }
 
     //------------------------------------------------------------
 
@@ -42,6 +58,10 @@
     userForm.username.addEventListener('change', function () {
         _.isEmpty(userForm.username.value) ?
             usernameErrorHandler() : usernameDefaultHandler();
+    });
+
+    userForm.username.addEventListener('keypress', function () {
+        usernameDefaultHandler();
     });
 
     userForm.submit.addEventListener('click', function (e) {
@@ -57,6 +77,7 @@
             return;
         }
 
+        window.localStorage.setItem('username', username);
         userForm.username.setAttribute('disabled', 'disabled');
     });
 
@@ -64,6 +85,8 @@
         e.preventDefault();
         e.stopPropagation();
 
+        userForm.username.value = null;
+        localStorage.removeItem('username');
         userForm.username.removeAttribute('disabled');
     });
 
@@ -80,7 +103,16 @@
     //------------------------------------------------------------
 
     window.addEventListener('load', function (e) {
+        var username;
 
+        username = window.localStorage.getItem('username');
+
+        if(!_.isNull(username)) {
+            userForm.username.value = username;
+            userForm.username.setAttribute('disabled', 'disabled');
+        }
     });
 
-})(window);
+    //------------------------------------------------------------
+
+})(window, document);
