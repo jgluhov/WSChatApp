@@ -1,0 +1,13 @@
+.form-group > input::-webkit-input-placeholder {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.form-group > input:focus::-webkit-input-placeholder {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.form-group.has-error > input::-webkit-input-placeholder {
+    color: #a94442;
+}

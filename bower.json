@@ -1,0 +1,25 @@
+{
+  "name": "WSChatApp",
+  "description": "",
+  "main": "index.html",
+  "authors": [
+    "JGluhov <evgeniy.glukhov@saprun.com>"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "sockets",
+    "chat"
+  ],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "lodash": "^4.15.0",
+    "bootstrap": "^3.3.7"
+  }
+}

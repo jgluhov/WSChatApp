@@ -1,0 +1,15 @@
+{
+  "name": "WSChatApp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "node.js",
+  "scripts": {
+    "test": "node node.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ws": "^1.1.1"
+  }
+}
